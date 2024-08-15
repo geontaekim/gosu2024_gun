@@ -41,6 +41,10 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 @RequiredArgsConstructor
 public class S3ImageService implements ImageService {
+	
+	
+	
+	
 
 	private final AmazonS3 amazonS3;
 	private static final String supportedImageExtension[] = {"jpg", "jpeg", "png"};

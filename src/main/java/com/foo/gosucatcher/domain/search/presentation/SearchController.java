@@ -34,6 +34,14 @@ public class SearchController {
 		SubItemsResponse subItemsResponse = searchService.searchKeyword(memberId, keyword);
 
 		return ResponseEntity.ok(subItemsResponse);
+		
+		
+		
+		
+		
+		
+		
+		
 	}
 
 	@Operation(summary = "로그인한 유저의 최근 검색어 조회", description = "로그인한 해당 유저의 최근 검색어가 조회 됩니다.")
