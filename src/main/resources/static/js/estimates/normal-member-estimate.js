@@ -210,7 +210,8 @@ $(document).ready(function () {
 
             },
             error: function (xhr, status, error) {
-                window.alert("견적 요청에 실패했습니다.");
+				var errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : "견적 요청에 실패했습니다.";
+                window.alert(errorMessage);
             }
         });
     });

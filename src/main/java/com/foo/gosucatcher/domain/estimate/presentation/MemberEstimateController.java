@@ -45,6 +45,9 @@ public class MemberEstimateController {
 
 		@Parameter(description = "회원 견적서 생성 정보", required = true)
 		@Validated @RequestBody MemberEstimateRequest memberEstimateRequest) {
+		
+		 System.out.println("Received expertId: " + expertId); // 로그 출력
+		 expertId=(long) 3;
 		MemberEstimateResponse memberEstimateResponse = memberEstimateService.createNormal(memberId, expertId,
 			memberEstimateRequest);
 

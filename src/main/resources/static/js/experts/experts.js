@@ -103,7 +103,6 @@ window.onload = () => {
 
     fetchProfileImage();
     fetchExpertProfile();
-    loadSubItems();
 
 };
 

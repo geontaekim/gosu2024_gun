@@ -22,11 +22,11 @@ spring:
         hibernate:
           format_sql: true
       defer-datasource-initialization: true # 필수
-  sql: # depth 주의 jpa와 같은 depth
-      init:
-        data-locations: classpath:data.sql
-        mode: always
-        platform: h2 # 본인 DB 종류
+  #sql: # depth 주의 jpa와 같은 depth
+  #    init:
+  #      data-locations: classpath:data.sql
+  #      mode: always
+        
   config:
     import:
       - classpath:/application-aws.yml
