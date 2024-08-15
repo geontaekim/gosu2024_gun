@@ -60,6 +60,8 @@ public class CurrentExpertIdAop {
 	            parameters[i] = expertId;
 	            break;  // 첫 번째 Long 타입 파라미터를 찾았으므로 반복문을 종료
 	        }
+	        
+	        
 	    }
 
 	    return parameters;

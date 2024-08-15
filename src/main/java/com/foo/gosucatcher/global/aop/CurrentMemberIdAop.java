@@ -55,7 +55,7 @@ public class CurrentMemberIdAop {
 	    Parameter[] methodParameters = method.getParameters();
 
 	    for (int i = 0; i < methodParameters.length; i++) {
-	        if (methodParameters[i].getType().equals(Long.class)) {  // Long 타입 파라미터를 찾음
+	    	if (methodParameters[i].getType().equals(Long.class) && parameters[i] == null) {
 	            parameters[i] = memberId;
 	        }
 	    }

@@ -47,7 +47,7 @@ public class MemberEstimateController {
 		@Validated @RequestBody MemberEstimateRequest memberEstimateRequest) {
 		
 		 System.out.println("Received expertId: " + expertId); // 로그 출력
-		 expertId=(long) 3;
+		 
 		MemberEstimateResponse memberEstimateResponse = memberEstimateService.createNormal(memberId, expertId,
 			memberEstimateRequest);
 
