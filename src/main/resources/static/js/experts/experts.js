@@ -125,13 +125,44 @@ async function loadSubItems() {
 
         const response = await fetch("/api/v1/experts/sub-items", options);
         const data = await response.json();
-        displaySubItems(data.subItemsResponse);
+        displaySubItems(data);
     } catch (error) {
         console.error('제공 서비스 로딩 중 오류 발생:', error);
     }
 }
 
+// 데이터를 받아서 처리하는 함수
+function displaySubItems(data) {
+    const container = document.getElementById('sub-items');
+    container.innerHTML = "";
 
+    // subItems가 존재하는지 확인
+    if (data.subItemsResponse && data.subItemsResponse.length > 0) {
+        data.subItemsResponse.forEach(subItem => {
+            const button = document.createElement('button');
+            button.className = "btn dashboard-btn btn-outline-primary";
+            button.style.marginRight = '10px';
+            button.innerText = subItem.name;
+
+            const closeButton = document.createElement('span');
+            closeButton.innerText = 'x';
+            closeButton.onclick = () => removeSubItem(subItem.name);
+            closeButton.style.marginLeft = '5px';
+            closeButton.style.cursor = 'pointer';
+
+            button.appendChild(closeButton);
+            container.appendChild(button);
+        });
+    } else {
+        // subItems가 없을 때 message 값을 출력
+        const message = document.createElement('p');
+        message.className = "alert alert-warning";
+        message.innerText = data.message || "No sub-items available.";
+        container.appendChild(message);
+    }
+}
+
+/*
 function displaySubItems(subItems) {
     const container = document.getElementById('sub-items');
     container.innerHTML = "";
@@ -156,7 +187,7 @@ function displaySubItems(subItems) {
         container.appendChild(button);
     });
 }
-
+*/
 async function removeSubItem(subItemName) {
 
     try {
