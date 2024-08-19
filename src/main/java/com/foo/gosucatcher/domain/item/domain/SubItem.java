@@ -56,4 +56,15 @@ public class SubItem extends BaseEntity {
 		this.name = subItem.getName();
 		this.description = subItem.getDescription();
 	}
+	
+	@Override
+	public String toString() {
+	    return "SubItem{" +
+	            "id=" + id +
+	            ", mainItem=" + (mainItem != null ? mainItem.getId() : "null") +
+	            ", name='" + name + '\'' +
+	            ", description='" + description + '\'' +
+	            ", isDeleted=" + isDeleted +
+	            '}';
+	}
 }

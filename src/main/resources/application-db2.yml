@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://localhost:3306/gosu?useUnicode=true&characterEncoding=utf8mb4&characterSetResults=utf8mb4
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: root
+    password: 1234
+
+  jpa:
+    database-platform: org.hibernate.dialect.MariaDB103Dialect
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDB103Dialect
+        connection:
+          characterEncoding: UTF-8
+          charSet: UTF-8
+          useUnicode: true
+        hbm2ddl:
+          charset_name: UTF-8
+   
+   
+   
+
+# H2 콘솔 설정은 더 이상 필요하지 않으므로 제거합니다.
