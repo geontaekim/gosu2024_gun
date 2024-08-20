@@ -140,6 +140,7 @@ function uploadProfileImage() {
         },
         success: function (json) {
             alert("등록되었습니다.");
+            window.location.reload();
 
         },
         error: function (xhr, status, error) {

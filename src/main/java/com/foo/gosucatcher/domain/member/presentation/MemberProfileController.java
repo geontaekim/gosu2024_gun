@@ -19,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.foo.gosucatcher.domain.image.application.dto.request.ImageUploadRequest;
 import com.foo.gosucatcher.domain.image.application.dto.response.ImageResponse;
 import com.foo.gosucatcher.domain.image.application.dto.response.ImagesResponse;
+import com.foo.gosucatcher.domain.image.domain.FileImage;
+import com.foo.gosucatcher.domain.image.infrastructure.FileImageService;
 import com.foo.gosucatcher.domain.member.application.MemberProfileService;
 import com.foo.gosucatcher.domain.member.application.dto.request.MemberProfileChangeRequest;
 import com.foo.gosucatcher.domain.member.application.dto.response.MemberProfileChangeResponse;
@@ -38,6 +40,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberProfileController {
 
 	private final MemberProfileService memberProfileService;
+	private final FileImageService fileImageService;
 
 	@CurrentMemberId
 	@PatchMapping
@@ -117,9 +120,10 @@ public class MemberProfileController {
 		Long memberId
 	) {
 		ImageResponse response = memberProfileService.getProfileImage(memberId);
-
+		System.out.println("ccccccccc");
 		return ResponseEntity.ok(response);
 	}
+	
 
 	@CurrentMemberId
 	@DeleteMapping("/images")

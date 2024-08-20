@@ -171,8 +171,9 @@ $(document).ready(function () {
                 window.alert("바로 견적이 성공적으로 생성되었습니다.");
                 window.location.href = '/gosu-catcher';
             },
-            error: function (xhr, status, error) {
-                window.alert("바로 견적 생성에 실패했습니다.");
+            error: function (xhr, status, error) {                
+                var errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : "바로 견적 생성에 실패했습니다.";
+                window.alert(errorMessage);
             }
         });
     });

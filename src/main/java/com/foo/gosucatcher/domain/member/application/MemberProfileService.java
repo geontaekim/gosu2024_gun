@@ -1,6 +1,7 @@
 package com.foo.gosucatcher.domain.member.application;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,9 @@ import com.foo.gosucatcher.domain.image.application.dto.request.ImageDeleteReque
 import com.foo.gosucatcher.domain.image.application.dto.request.ImageUploadRequest;
 import com.foo.gosucatcher.domain.image.application.dto.response.ImageResponse;
 import com.foo.gosucatcher.domain.image.application.dto.response.ImagesResponse;
+import com.foo.gosucatcher.domain.image.domain.FileImage;
+import com.foo.gosucatcher.domain.image.domain.FileImageRepository;
+import com.foo.gosucatcher.domain.image.infrastructure.FileImageService;
 import com.foo.gosucatcher.domain.member.application.dto.request.MemberProfileChangeRequest;
 import com.foo.gosucatcher.domain.member.application.dto.response.MemberProfileChangeResponse;
 import com.foo.gosucatcher.domain.member.application.dto.response.MemberProfileResponse;
@@ -33,6 +37,10 @@ public class MemberProfileService {
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final ImageService imageService;
+	
+	private final FileImageRepository fileImageRepository;
+	
+	private final FileImageService fileImageService;
 
 	public MemberProfileResponse findMemberProfile(Long memberId) {
 		Member member = memberRepository.findById(memberId)
@@ -53,13 +61,18 @@ public class MemberProfileService {
 	}
 
 	public ImagesResponse uploadProfileImage(Long memberId, ImageUploadRequest request) {
-		ImagesResponse uploadResponse = imageService.store(request);
-
+		//AWS S3
+		//ImagesResponse uploadResponse = imageService.store(request);
+		
+		//물리저장
+		ImagesResponse uploadResponse = fileImageService.save(request,memberId);
+		
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_MEMBER));
 
 		List<String> filenames = uploadResponse.filenames();
 		String filename = filenames.get(0);
+				
 		MemberImage newProfileImage = new MemberImage(filename);
 
 		member.updateProfileImage(newProfileImage);
@@ -68,7 +81,9 @@ public class MemberProfileService {
 
 		return uploadResponse;
 	}
+	
 
+	/*
 	@Transactional(readOnly = true)
 	public ImageResponse getProfileImage(Long memberId) {
 		Member member = memberRepository.findById(memberId)
@@ -77,6 +92,20 @@ public class MemberProfileService {
 
 		return new ImageResponse(List.of(filename));
 	}
+	*/
+	
+	@Transactional(readOnly = true)
+	public ImageResponse getProfileImage(Long memberId) {
+		List<FileImage> fileImages = fileImageRepository.findAllByMemberId(memberId);
+
+		if (fileImages.isEmpty()) {
+		    throw new EntityNotFoundException(ErrorCode.NOT_FOUND_MEMBER);
+		}
+
+		String fileUrl = "/api/v1/images/image/" + fileImages.get(0).getFileName();
+	    return new ImageResponse(List.of(fileUrl));
+	}
+
 
 	public void deleteProfileImage(Long memberId) {
 		Member member = memberRepository.findById(memberId)

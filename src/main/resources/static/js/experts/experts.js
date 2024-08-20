@@ -310,9 +310,13 @@ async function fetchExpertEditProfile() {
     const response = await fetch('/api/v1/experts', options);
 
     if (response.ok) {
-        const expert = await response.json();
-        document.getElementById('storeNameInput').value = expert.storeName;
-        document.getElementById('locationInput').value = expert.location;
+        const expert = await response.json();                
+    	document.getElementById('storeNameInput').value = expert.storeName;
+		// 도시와 구/군을 나누어 각각의 select box에 값 설정 
+		const locationParts = expert.location.split(' ');
+    	document.getElementById('citySelect').value = locationParts[0];
+    	document.getElementById('districtSelect').value = locationParts[1];
+                
         document.getElementById('maxTravelDistanceInput').value = expert.maxTravelDistance;
         document.getElementById('descriptionInput').value = expert.description;
     } else {

@@ -48,3 +48,7 @@ secret:
     fromNumber: DUMMY_PHONE_NUMBER
     domain: https://api.coolsms.co.kr
     expirationTime: 600
+    
+    
+file:
+  upload-dir: "C:/upload/images"

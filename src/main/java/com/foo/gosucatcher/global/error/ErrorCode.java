@@ -82,7 +82,8 @@ public enum ErrorCode {
 
 	//채팅 메시지
 	NOT_FOUND_MESSAGE("CM001", "채팅 메시지가 존재하지 않습니다."),
-
+	
+		
 	//JWT
 	MALFORMED_JWT("JT001", "유효한 Jws의 형태가 아닙니다."),
 	EXPIRED_JWT("JT002", "Jwt의 유효시간이 만료되었습니다."),
