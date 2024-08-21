@@ -31,6 +31,7 @@ import com.foo.gosucatcher.domain.image.application.dto.response.ImageResponse;
 import com.foo.gosucatcher.domain.image.application.dto.response.ImagesResponse;
 import com.foo.gosucatcher.domain.item.application.dto.response.sub.SubItemsResponse;
 import com.foo.gosucatcher.global.aop.CurrentExpertId;
+import com.foo.gosucatcher.global.aop.CurrentMemberId;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -192,6 +193,18 @@ public class ExpertController {
 
 		return ResponseEntity.ok(response);
 	}
+	
+	
+	@GetMapping("/images/{expertId}")
+	@Operation(summary = "고수 사진 전체 조회(다른사람이 조회시)", description = "고수 계정 내 사진을 모두 조회합니다.(다른사람이 조회시)")
+	public ResponseEntity<ImageResponse> getExProfileImage(
+			@PathVariable Long expertId) {
+		ImageResponse response = expertService.getAllImages(expertId);
+
+		return ResponseEntity.ok(response);
+	}
+	
+	
 
 	@GetMapping("/search")
 	@Operation(summary = "고수 찾기", description = "조건에 맞는 고수들을 찾습니다.")

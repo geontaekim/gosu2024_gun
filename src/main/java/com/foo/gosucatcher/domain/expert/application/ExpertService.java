@@ -267,6 +267,8 @@ public class ExpertService {
 		        .map(fileImage -> "/api/v1/images/image/" + fileImage.getFileName())
 		        .collect(Collectors.toList());
 		
+		System.out.println("ccccccccccc");
+		
 		return new ImageResponse(fileUrls);
 	}
 

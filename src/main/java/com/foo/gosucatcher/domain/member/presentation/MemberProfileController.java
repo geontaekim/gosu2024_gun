@@ -124,6 +124,16 @@ public class MemberProfileController {
 		return ResponseEntity.ok(response);
 	}
 	
+		
+	@GetMapping("/images/{expertId}")
+	@Operation(summary = "고수 프로필 이미지 조회", description = "고수 프로필 이미지를 조회합니다.")
+	public ResponseEntity<ImageResponse> getExProfileImage(
+		    @PathVariable Long expertId
+		) {
+		ImageResponse response = memberProfileService.getProfileImage(expertId);		
+		return ResponseEntity.ok(response);
+	}
+	
 
 	@CurrentMemberId
 	@DeleteMapping("/images")

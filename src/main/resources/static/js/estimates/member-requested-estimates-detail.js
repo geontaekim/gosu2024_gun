@@ -108,56 +108,52 @@ function createExpertEstimateCard(expertData) {
     const buttons = document.createElement('div');
     buttons.classList.add('buttons');
 
-    fetchExpertImageData()
-        .then(result => {
-            const profileImage = document.createElement('img');
-            profileImage.src = 'https://gosu-catcher.s3.ap-northeast-2.amazonaws.com/default.png';
-            profileImage.alt = '프로필 사진';
+    // 이미지 파일명을 사용하여 이미지 URL 생성
+    const profileImage = document.createElement('img');
+    const filename = expertData.expert.filename; // 파일 이름 추출
+    profileImage.src = `/api/v1/images/image/${filename}`; // 이미지 서버 URL에 파일 이름을 포함
+    profileImage.alt = '프로필 사진';
 
-            const userDetails = document.createElement('div');
-            userDetails.classList.add('user-details');
+    const userDetails = document.createElement('div');
+    userDetails.classList.add('user-details');
 
-            const name = document.createElement('h2');
-            name.textContent = expertData.expert.storeName;
+    const name = document.createElement('h2');
+    name.textContent = expertData.storeName;
 
-            const rating = document.createElement('p');
-            rating.textContent = `평점: ${expertData.expert.rating}`;
+    const rating = document.createElement('p');
+    rating.textContent = `평점: ${expertData.expert.rating}`;
 
-            const location = document.createElement('p');
-            location.textContent = `위치: ${expertData.expert.location}`;
+    const location = document.createElement('p');
+    location.textContent = `위치: ${expertData.expert.location}`;
 
-            const experience = document.createElement('p');
-            experience.textContent = `경력사항: ${expertData.expert.description}`;
+    const experience = document.createElement('p');
+    experience.textContent = `경력사항: ${expertData.expert.description}`;
 
-            const cost = document.createElement('p');
-            cost.textContent = `견적 비용: ${expertData.totalCost}원`;
+    const cost = document.createElement('p');
+    cost.textContent = `견적 비용: ${expertData.totalCost}원`;
 
-            userCard.appendChild(profileImage);
-            userDetails.appendChild(name);
-            userDetails.appendChild(rating);
-            userDetails.appendChild(location);
-            userDetails.appendChild(experience);
-            userDetails.appendChild(cost);
-            userCard.appendChild(userDetails);
+    userCard.appendChild(profileImage);
+    userDetails.appendChild(name);
+    userDetails.appendChild(rating);
+    userDetails.appendChild(location);
+    userDetails.appendChild(experience);
+    userDetails.appendChild(cost);
+    userCard.appendChild(userDetails);
 
-            const quoteButton = document.createElement('button');
-            quoteButton.classList.add('quote-button');
-            quoteButton.textContent = '견적서 보기';
-            quoteButton.addEventListener('click', () => {
-                openModal(expertData);
-            })
+    const quoteButton = document.createElement('button');
+    quoteButton.classList.add('quote-button');
+    quoteButton.textContent = '견적서 보기';
+    quoteButton.addEventListener('click', () => {
+        openModal(expertData);
+    });
 
-            const chatButton = document.createElement('button');
-            chatButton.classList.add('chat-button');
-            chatButton.textContent = '채팅하기';
+    const chatButton = document.createElement('button');
+    chatButton.classList.add('chat-button');
+    chatButton.textContent = '채팅하기';
 
-            buttons.appendChild(quoteButton);
-            buttons.appendChild(chatButton);
-            userCard.appendChild(buttons);
-        })
-        .catch(error => {
-            console.log("오류:", error);
-        });
+    buttons.appendChild(quoteButton);
+    buttons.appendChild(chatButton);
+    userCard.appendChild(buttons);
 
     return userCard;
 }

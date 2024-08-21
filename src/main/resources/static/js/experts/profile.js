@@ -1,7 +1,11 @@
 window.onload = () => {
-     fetchProfileImage();
+	
+	const pathParts = window.location.pathname.split('/');    
+    // 경로의 마지막 부분을 expertId로 추출 (예: "3")
+    const expertId = pathParts[pathParts.length - 1];	
+     fetchProfileImage(expertId);
     // fetchBackgroundImage();
-    loadImages();
+    loadImages(expertId);
     //renderImages();
     // fetchExpertProfile();
 };
@@ -28,7 +32,7 @@ async function fetchBackgroundImage() {
     }
 }
 
-async function fetchProfileImage() {
+async function fetchProfileImage(expertId) {
     const token = localStorage.getItem('accessToken');
 
     const options = {
@@ -38,7 +42,7 @@ async function fetchProfileImage() {
             'Authorization': 'Bearer ' + token
         }
     };
-    const response = await fetch('/api/v1/members/profile/images', options);
+    const response = await fetch(`/api/v1/members/profile/images/${expertId}`, options)
 
     if (response.ok) {
         const data = await response.json();
@@ -49,10 +53,10 @@ async function fetchProfileImage() {
     }
 }
 
-function loadImages() {
+function loadImages(expertId) {
     const token = localStorage.getItem('accessToken');
 
-    fetch('/api/v1/experts/images', {
+    fetch(`/api/v1/experts/images/${expertId}`, {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer ' + token
