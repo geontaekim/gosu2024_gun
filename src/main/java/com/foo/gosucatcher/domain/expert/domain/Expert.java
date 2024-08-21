@@ -134,4 +134,19 @@ public class Expert extends BaseEntity {
 
 		return maxTravelDistance;
 	}
+	
+	  @Override
+	    public String toString() {
+	        return "Expert{" +
+	                "id=" + id +
+	                ", storeName='" + storeName + '\'' +
+	                ", location='" + location + '\'' +
+	                ", maxTravelDistance=" + maxTravelDistance +
+	                ", description='" + description + '\'' +
+	                ", isAuto=" + isAuto +
+	                ", rating=" + rating +
+	                ", reviewCount=" + reviewCount +
+	                ", isDeleted=" + isDeleted +
+	                '}';
+	    }
 }

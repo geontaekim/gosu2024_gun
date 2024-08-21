@@ -22,22 +22,26 @@ public class FileImage {
 	    @Column(nullable = false)
 	    private Integer seq; // 파일의 순서를 나타내는 값
 
-	    @Column(nullable = true) 
-	    private Long memberId; 
+	    @Column(nullable = true)
+	    private Long userId; // 회원 또는 고수의 ID
 
 	    @Column(nullable = false)
-	    private String fileName;
+	    private String fileName; // 파일 이름
 
 	    @Column(nullable = false)
-	    private String filePath;
+	    private String filePath; // 파일 경로
+
+	    @Column(nullable = false)
+	    private String type; // 파일 유형 ('MEMBER_PROFILE', 'EXPERT_PROFILE', 'EXPERT_WORK')
 
 	    public FileImage() {}
 
-	    public FileImage(String fileKey, Integer seq, Long memberId, String fileName, String filePath) {
+	    public FileImage(String fileKey, Integer seq, Long userId, String fileName, String filePath, String type) {
 	        this.fileKey = fileKey;
 	        this.seq = seq;
-	        this.memberId = memberId;
+	        this.userId = userId;
 	        this.fileName = fileName;
 	        this.filePath = filePath;
+	        this.type = type;
 	    }
 }

@@ -65,7 +65,8 @@ public class MemberProfileService {
 		//ImagesResponse uploadResponse = imageService.store(request);
 		
 		//물리저장
-		ImagesResponse uploadResponse = fileImageService.save(request,memberId);
+		String type = "MEMBER_PROFILE";
+		ImagesResponse uploadResponse = fileImageService.save(request,memberId,type);
 		
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_MEMBER));
@@ -96,7 +97,8 @@ public class MemberProfileService {
 	
 	@Transactional(readOnly = true)
 	public ImageResponse getProfileImage(Long memberId) {
-		List<FileImage> fileImages = fileImageRepository.findAllByMemberId(memberId);
+		String type="MEMBER_PROFILE";
+		List<FileImage> fileImages = fileImageRepository.findAllByUserIdAndType(memberId,type);
 
 		if (fileImages.isEmpty()) {
 		    throw new EntityNotFoundException(ErrorCode.NOT_FOUND_MEMBER);

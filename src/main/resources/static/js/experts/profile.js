@@ -1,8 +1,8 @@
 window.onload = () => {
-    // fetchProfileImage();
+     fetchProfileImage();
     // fetchBackgroundImage();
-    // loadImages();
-    renderImages();
+    loadImages();
+    //renderImages();
     // fetchExpertProfile();
 };
 

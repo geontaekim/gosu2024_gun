@@ -47,11 +47,11 @@ public class FileImageService {
 
     private static final String[] supportedImageExtension = {"jpg", "jpeg", "png"};
 
-    public ImagesResponse save(ImageUploadRequest request ,Long memberId) {
+    public ImagesResponse save(ImageUploadRequest request ,Long memberId,String type) {
     	 //기존사진 삭제
-    	 deleteExistingImagesByMemberId(memberId);
+    	 deleteExistingImagesByMemberId(memberId,type);
     	
-        List<String> paths = new ArrayList<>();
+        List<String> filenames = new ArrayList<>();
 
         // 파일 키 생성 (한 번의 업로드 작업에 대해 동일한 키 사용)
         String fileKey = UUID.randomUUID().toString();
@@ -66,15 +66,45 @@ public class FileImageService {
             // 파일경로만 추출
             String directoryPath = fullPath.substring(0, fullPath.lastIndexOf(File.separator));
             // 파일 정보 DB에 저장
-            FileImage fileImage = new FileImage(fileKey, seq, memberId, fileName, directoryPath);
+            FileImage fileImage = new FileImage(fileKey, seq, memberId, fileName, directoryPath,type);
             fileImageRepository.save(fileImage);
 
-            paths.add(directoryPath);
+            filenames.add(fileName);
             seq++; // 다음 파일의 seq 값 증가
         }
 
-        return ImagesResponse.from(paths);
+        return ImagesResponse.from(filenames);
     }
+    
+    public ImagesResponse save_expert(ImageUploadRequest request ,Long expertId,String type) {
+   	
+    	List<String> filenames = new ArrayList<>();
+       List<FileImage> fileImages = fileImageRepository.findAllByUserIdAndType(expertId,type);
+
+       // 파일 키 생성 (한 번의 업로드 작업에 대해 동일한 키 사용)
+       String fileKey = UUID.randomUUID().toString();
+       int seq = fileImages.isEmpty() ? 1 : fileImages.get(fileImages.size() - 1).getSeq() + 1;
+       
+
+       for (MultipartFile multipartFile : request.files()) {
+           validateFile(multipartFile);
+           String fullPath = saveFile(multipartFile);
+
+           // 파일 이름만 추출
+           String fileName = extractFilename(fullPath);
+           // 파일경로만 추출
+           String directoryPath = fullPath.substring(0, fullPath.lastIndexOf(File.separator));
+           // 파일 정보 DB에 저장
+           FileImage fileImage = new FileImage(fileKey, seq, expertId, fileName, directoryPath,type);
+           fileImageRepository.save(fileImage);
+
+           filenames.add(fileName);
+           seq++; // 다음 파일의 seq 값 증가
+       }
+
+       return ImagesResponse.from(filenames);
+   }
+    
 
     // 파일을 물리 경로에 저장하는 메서드
     private String saveFile(MultipartFile file) {
@@ -145,20 +175,9 @@ public class FileImageService {
     
     
     
-    public FileImage getFileImageByMemberId(Long memberId) {
-        return fileImageRepository.findByMemberId(memberId)
-            .orElseThrow(() -> new EntityNotFoundException("해당 멤버의 파일 이미지를 찾을 수 없습니다."));
-    }
-    
-    // 예: 특정 멤버의 모든 이미지 파일 조회
-    public List<FileImage> getAllFileImagesByMemberId(Long memberId) {
-        return fileImageRepository.findAllByMemberId(memberId);
-    }
-    
-    
-    private void deleteExistingImagesByMemberId(Long memberId) {
+    private void deleteExistingImagesByMemberId(Long memberId,String type) {
         // 1. 기존 FileImage 데이터 조회
-        List<FileImage> existingImages = fileImageRepository.findAllByMemberId(memberId);
+        List<FileImage> existingImages = fileImageRepository.findAllByUserIdAndType(memberId,type);
 
         // 2. 물리 파일 삭제
         for (FileImage fileImage : existingImages) {

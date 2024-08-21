@@ -120,7 +120,7 @@ public class MemberProfileController {
 		Long memberId
 	) {
 		ImageResponse response = memberProfileService.getProfileImage(memberId);
-		System.out.println("ccccccccc");
+		
 		return ResponseEntity.ok(response);
 	}
 	

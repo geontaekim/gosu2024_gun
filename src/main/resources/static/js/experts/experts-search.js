@@ -186,7 +186,7 @@ function displayExperts(experts) {
         expertInfo.appendChild(descriptionElement);
 
         const imgElement = document.createElement('img');
-        imgElement.src = expert.filename;
+        imgElement.src = `/api/v1/images/image/${expert.filename}`;
         imgElement.alt = `${expert.storeName}의 프로필 사진`;
         imgElement.style.width = '100px';
 

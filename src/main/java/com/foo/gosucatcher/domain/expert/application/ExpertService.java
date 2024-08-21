@@ -6,6 +6,10 @@ import static com.foo.gosucatcher.global.error.ErrorCode.NOT_FOUND_EXPERT;
 import static com.foo.gosucatcher.global.error.ErrorCode.NOT_FOUND_EXPERT_ITEM;
 import static com.foo.gosucatcher.global.error.ErrorCode.NOT_FOUND_SUB_ITEM;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,10 +35,15 @@ import com.foo.gosucatcher.domain.image.application.dto.request.ImageDeleteReque
 import com.foo.gosucatcher.domain.image.application.dto.request.ImageUploadRequest;
 import com.foo.gosucatcher.domain.image.application.dto.response.ImageResponse;
 import com.foo.gosucatcher.domain.image.application.dto.response.ImagesResponse;
+import com.foo.gosucatcher.domain.image.domain.FileImage;
+import com.foo.gosucatcher.domain.image.domain.FileImageRepository;
+import com.foo.gosucatcher.domain.image.infrastructure.FileImageService;
 import com.foo.gosucatcher.domain.item.application.dto.response.sub.SubItemsResponse;
 import com.foo.gosucatcher.domain.item.domain.SubItem;
 import com.foo.gosucatcher.domain.item.domain.SubItemRepository;
 import com.foo.gosucatcher.domain.member.application.MemberProfileService;
+import com.foo.gosucatcher.domain.member.domain.Member;
+import com.foo.gosucatcher.domain.member.domain.MemberImage;
 import com.foo.gosucatcher.domain.member.domain.MemberRepository;
 import com.foo.gosucatcher.global.error.ErrorCode;
 import com.foo.gosucatcher.global.error.exception.BusinessException;
@@ -54,6 +63,10 @@ public class ExpertService {
 	private final ImageService imageService;
 	private final ExpertImageRepository expertImageRepository;
 	private final MemberProfileService memberProfileService;
+	
+	private final FileImageRepository fileImageRepository;
+	
+	private final FileImageService fileImageService;
 
 	public ExpertResponse create(long expertId, ExpertUpdateRequest request) {
 		Expert existingExpert = expertRepository.findById(expertId)
@@ -173,7 +186,7 @@ public class ExpertService {
 		List<Long> expertIds = expertIdsSlice.getContent();
 
 		List<Object[]> results = expertRepository.findExpertsWithProfileImageByIds(expertIds);
-
+		
 		List<ExpertResponse> expertResponses = results.stream()
 			.map(result -> {
 				Expert expert = (Expert)result[0];
@@ -195,6 +208,8 @@ public class ExpertService {
 		return new SlicedExpertsResponse(expertResponses, expertIdsSlice.hasNext());
 	}
 
+	
+	/*
 	public ImagesResponse uploadImage(Long expertId, ImageUploadRequest request) {
 
 		ImagesResponse response = imageService.store(request);
@@ -214,21 +229,48 @@ public class ExpertService {
 
 		return response;
 	}
+*/
+	
+	public ImagesResponse uploadImage(Long expertId, ImageUploadRequest request) {
 
+		//물리저장
+				String type = "EXPORT_WORK";
+				ImagesResponse uploadResponse = fileImageService.save_expert(request,expertId,type);
+				List<FileImage> fileImages = fileImageRepository.findAllByUserIdAndType(expertId,type);
+				Expert expert = expertRepository.findById(expertId)
+						.orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_EXPERT));
+
+				List<String> filenames = uploadResponse.filenames();
+				//String filename = filenames.get(0);
+						
+				for (String filename : uploadResponse.filenames()) {
+
+					ExpertImage expertImage = ExpertImage.builder()
+						.filename(filename)
+						.expert(expert)
+						.build();
+
+					expertImageRepository.save(expertImage);
+				}
+
+				return uploadResponse;
+	}
+	
+	
+	
 	@Transactional(readOnly = true)
 	public ImageResponse getAllImages(Long expertId) {
 
-		Expert expert = expertRepository.findById(expertId)
-			.orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_EXPERT));
-
-		List<ExpertImage> expertImages = expertImageRepository.findAllByExpert(expert);
-		List<String> filenames = expertImages.stream()
-			.map(ExpertImage::getFilename)
-			.collect(Collectors.toList());
-
-		return new ImageResponse(filenames);
+		String type="EXPORT_WORK";
+		List<FileImage> fileImages = fileImageRepository.findAllByUserIdAndType(expertId,type);		
+		List<String> fileUrls = fileImages.stream()
+		        .map(fileImage -> "/api/v1/images/image/" + fileImage.getFileName())
+		        .collect(Collectors.toList());
+		
+		return new ImageResponse(fileUrls);
 	}
 
+	/*
 	public void deleteImage(Long expertId, String filename) {
 
 		Expert expert = expertRepository.findById(expertId)
@@ -238,6 +280,30 @@ public class ExpertService {
 			.orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_IMAGE));
 
 		imageService.delete(new ImageDeleteRequest(List.of(filename)));
+
+		expertImageRepository.delete(expertImage);
+	}
+	*/
+	
+	public void deleteImage(Long expertId, String filename) {
+		
+		FileImage fileImage = fileImageRepository.findByUserIdAndFileName(expertId, filename)
+	            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_IMAGE));
+
+		Expert expert = expertRepository.findById(expertId)
+			.orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_EXPERT));
+
+		ExpertImage expertImage = expertImageRepository.findByFilename(filename)
+		        .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_EXPERT));
+
+		 try {
+	            Path filePath = Paths.get(fileImage.getFilePath()).resolve(filename);
+	            Files.deleteIfExists(filePath);
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+	       
+	        fileImageRepository.delete(fileImage);
 
 		expertImageRepository.delete(expertImage);
 	}

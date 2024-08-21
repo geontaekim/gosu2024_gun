@@ -35,4 +35,13 @@ public class ExpertImage extends Image {
 		super(filename);
 		this.expert = expert;
 	}
+	
+	 @Override
+	    public String toString() {
+	        return "ExpertImage{" +
+	                "id=" + id +
+	                ", filename='" + getFilename() + '\'' +
+	                ", expertId=" + (expert != null ? expert.getId() : null) +
+	                '}';
+	    }
 }

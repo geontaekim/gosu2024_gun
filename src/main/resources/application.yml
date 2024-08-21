@@ -16,11 +16,7 @@ spring:
   jpa: # depth 주의
       open-in-view: true
       hibernate:
-        ddl-auto: create              
-        
-        
-        
-        
+        ddl-auto: create                                         
       properties:
         hibernate:
           format_sql: true
@@ -35,6 +31,9 @@ spring:
       - classpath:/application-aws.yml
       - classpath:/application-db.yml
       - classpath:/application-mail.yml
+  redis:
+   host: localhost
+   port: 6379
       
 logging:
   level:

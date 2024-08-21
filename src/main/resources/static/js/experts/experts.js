@@ -449,8 +449,10 @@ function renderImages(filenames) {
 
 function deleteImage(filename) {
     const token = localStorage.getItem('accessToken');
+    
+    const pureFilename = filename.split('/').pop();
 
-    fetch(`/api/v1/experts/images/${filename}`, {
+    fetch(`/api/v1/experts/images/${pureFilename}`, {
         method: 'DELETE',
         headers: {
             'Authorization': 'Bearer ' + token

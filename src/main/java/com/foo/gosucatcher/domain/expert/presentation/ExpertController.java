@@ -135,7 +135,7 @@ public class ExpertController {
 
 		return ResponseEntity.ok(response);
 	}
-
+/*
 	@CurrentExpertId
 	@PostMapping("/images")
 	@Operation(summary = "고수 사진 업로드", description = "고수 계정 내 사진을 업로드합니다.")
@@ -147,6 +147,23 @@ public class ExpertController {
 		MultipartFile file) throws IOException {
 		ImageUploadRequest request = new ImageUploadRequest(List.of(file));
 		ImagesResponse response = expertService.uploadImage(expertId, request);
+
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+	}
+	*/
+	
+	@CurrentExpertId
+	@PostMapping("/images")
+	@Operation(summary = "고수 사진 업로드", description = "고수 계정 내 사진을 업로드합니다.")
+	public ResponseEntity<ImagesResponse> uploadImage(
+		@Parameter(description = "고수 ID", required = true, example = "1")
+		Long expertId,
+
+		@Parameter(description = "고수 사진", required = true)
+		MultipartFile file) throws IOException {
+		ImageUploadRequest request = new ImageUploadRequest(List.of(file));
+		ImagesResponse response = expertService.uploadImage(expertId, request);		
+		
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
