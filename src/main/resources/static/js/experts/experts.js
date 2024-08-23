@@ -375,6 +375,8 @@ function uploadProfileImage() {
     });
 }
 
+
+/*
 function setDefaultProfileImage() {
     const token = localStorage.getItem('accessToken');
     fetch('/api/v1/members/profile/images', {
@@ -387,6 +389,45 @@ function setDefaultProfileImage() {
             alert('프로필 이미지가 기본 이미지로 변경되었습니다.');
         } else {
             alert('프로필 이미지 변경 중 오류가 발생했습니다.');
+        }
+    });
+}
+*/
+
+
+
+async function setDefaultProfileImage() {
+    const token = 'bearer ' + localStorage.getItem('accessToken');
+    const imageUrl = '/img/item_image.jpg';
+    if (document.querySelector('img').src === imageUrl) {
+        return;
+    }
+	
+	const response = await fetch(imageUrl);
+    const blob = await response.blob();
+
+    // Blob을 사용하여 File 객체 생성
+    const imageFile = new File([blob], "item_image.jpg", { type: "image/jpg" });
+	
+     var formData = new FormData();
+    formData.append('file', imageFile);
+
+    $.ajax({
+        type: 'POST',
+        url: '/api/v1/members/profile/images',
+        processData: false,
+        contentType: false,
+        data: formData,
+        headers: {
+            "Authorization": token
+        },
+        success: function (json) {
+            alert("등록되었습니다.");
+            window.location.reload();
+
+        },
+        error: function (xhr, status, error) {
+            alert("이미지 등록에 실패했습니다." + error);
         }
     });
 }

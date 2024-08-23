@@ -82,6 +82,7 @@ function loadUserImage() {
     });
 }
 
+/*
 function setDefaultProfileImage() {
     const token = 'bearer ' + localStorage.getItem('accessToken');
     const defaultUrl = 'https://gosu-catcher.s3.ap-northeast-2.amazonaws.com/default.png';
@@ -102,6 +103,47 @@ function setDefaultProfileImage() {
         }
     });
 }
+
+*/
+
+
+async function setDefaultProfileImage() {
+    const token = 'bearer ' + localStorage.getItem('accessToken');
+    const imageUrl = '/img/item_image.jpg';
+    if (document.querySelector('img').src === imageUrl) {
+        return;
+    }
+	
+	const response = await fetch(imageUrl);
+    const blob = await response.blob();
+
+    // Blob을 사용하여 File 객체 생성
+    const imageFile = new File([blob], "item_image.jpg", { type: "image/jpg" });
+	
+     var formData = new FormData();
+    formData.append('file', imageFile);
+
+    $.ajax({
+        type: 'POST',
+        url: '/api/v1/members/profile/images',
+        processData: false,
+        contentType: false,
+        data: formData,
+        headers: {
+            "Authorization": token
+        },
+        success: function (json) {
+            alert("등록되었습니다.");
+            window.location.reload();
+
+        },
+        error: function (xhr, status, error) {
+            alert("이미지 등록에 실패했습니다." + error);
+        }
+    });
+}
+
+
 
 function deleteMember() {
     let token = 'bearer ' + localStorage.getItem('accessToken');
